@@ -3,18 +3,6 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
 
-  document.addEventListener('DOMContentLoaded', function() {
-    var elems = document.querySelectorAll('select');
-    var instances = M.FormSelect.init(elems, options);
-  });
-
-  // Or with jQuery
-
-  $(document).ready(function(){
-    $('select').formSelect();
-  });
-        
-
   $(document).ready(function () {
     $('#DateOfBirth').change(function () {
       var now = new Date();   //Current Date
@@ -32,6 +20,32 @@ document.addEventListener("DOMContentLoaded", function() {
       return false;
       }
 })
+})
+
+
+ //Select Json
+ $.ajax({
+  url: 'https://raw.githubusercontent.com/marcovega/colombia-json/master/colombia.min.json',
+  type: 'GET',
+  dataType: 'json',
+
+  success: function (json) {
+    var departmento = `<option value="" disabled selected>Departamento</option>`;
+    for (let item of json) {
+      departmento += `<option value="${json.indexOf(item)}">${item.departamento}</option>`;
+    }
+
+    $('#departamentos').html(departmento);
+    $('select').formSelect();
+    $('#departamentos').on('change', function () {
+      var municipio = '<option value="" disabled selected>Municipio</option>';
+      for (let item of json[$(this).val()].ciudades) {
+        municipio += `<option value="${json[$(this).val()].ciudades.indexOf(item)}">${item}</option>`;
+      }
+      $('#municipios').html(municipio);
+      $('select').formSelect();
+    });
+  }
 })
 
 
@@ -70,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function() {
       alert('CORREO ELECTRONICO INVALIDO. Recuerde que el formato para el correo es email@ejemplo.com - No debe contener caracteres extraños: (! # $ % & * + / = ? ^ { | } ~)');
       return;
     }
-    else if(phone.length == 0) {
+    else if(phone.value.length == 0) {
       alert('Ingrese un nombre de Usuario');
       return;
     }
@@ -91,11 +105,10 @@ document.addEventListener("DOMContentLoaded", function() {
       return;
     }
     else if(password.length < 7 ){
-        alert('La Contraseña debe tener más de 8 caracteres')
+        alert('La Contraseña debe tener más de 8 caracteres');
       return;
     }
-    else if (!(password.match(passwordValidator)))
-    {
+    else if (!(password.match(passwordValidator))){
       alert('CONTRASEÑA INVALIDA. Recuerde que la contraseña debe tener 1 Mayuscula, 1 Minuscula, 1 Número y 1 Caracter extraño: (! # $ % & * + / = ? ^ { | } ~)');
       return;
     }
@@ -105,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     
 
- //el formulario se envia
+ //El formulario se envia
  alert("Muchas gracias por completar el formulario");
  document.formulario.post();
 } 
